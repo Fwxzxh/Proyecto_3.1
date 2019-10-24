@@ -1,8 +1,6 @@
-import re
 import numpy as np
-import math
 from numpy.polynomial import polynomial as P
-from scipy.integrate import quad
+
 
 def Lectura(r,g):
 
@@ -11,6 +9,7 @@ def Lectura(r,g):
         for j in range(g):
             MatO[i, j] = float(input(f"ingrese el valor del polinomio {i+1} en x{j}"))
     return MatO
+
 
 def sep_column(mat):
     vect1 = []
@@ -25,20 +24,31 @@ def gram_schmidt(A):
     for j in range(n):
         for k in range(j):
             #A[:, j] -= np.dot(A[:, k], A[:, j]) * A[:, k]
-            A[:, j] -= quad(P.polymul(A[:, k], A[:, j]), -1, 1) *A[:, k]
-        A[:, j] = A[:, j] / quad(P.polymul(A[:, j], A[:, j]), -1, 1)
+            print(f"Esto es v: {A[::-1, j]}")
+            print(f"Esto es u:  {A[::-1,k]}")
+            print("\n")
+
+            integral = np.polyint(P.polymul(A[::-1, j], A[::-1, k]))
+            print(f"Esta es la multiplicacion de v*u: {P.polymul(A[::-1, j], A[::-1, k])}")
+            print(f"Esta es la integral de v*u: {integral}")
+            integral2 = np.polyint(P.polymul(A[::-1, k], A[::-1, k]))
+            print(f"Esta es la multiplicacion de u*u: {P.polymul(A[:, k], A[:, k])}")
+            print(f"Esta es la integral de u*u: {integral2}")
+            print("\n")
+            print(f"La integral definida de v*u es:{np.polyval(integral, 1) - np.polyval(integral, -1)}")
+            print(f"La integral definida de u*u es:{np.polyval(integral2, 1) - np.polyval(integral2, -1)}")
+            print(f"Esta es la division de las integrales: {(np.polyval(integral, 1) - np.polyval(integral, -1)) / (np.polyval(integral2, 1) - np.polyval(integral2, -1))}")
+            print("\n")
+            A[:, j] -= ((np.polyval(integral, 1) - np.polyval(integral, -1)) / (np.polyval(integral2, 1) - np.polyval(integral2, -1))) * A[:, k]
+            print(f"Este es el vector columa resultante: {A[:,j]}\n")
     return A
-
-
-def TeoremaFun(f, a, b):
-    integral = f(b)-f(a)
-    return integral
 
 
 if __name__ == '__main__':
     g = int(input("ingrese el grado maximo de los polinomios"))
     r = int(input("ingrese el numero de polinomios"))
-    mat = Lectura(r,g)
+    mat = Lectura(r, g)
     print(mat)
-    print(sep_column(mat))
     print(gram_schmidt(sep_column(mat)))
+
+
