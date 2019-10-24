@@ -23,25 +23,20 @@ def gram_schmidt(A):
     n = A.shape[1]  # numero de vectores columna
     for j in range(n):
         for k in range(j):
-            #A[:, j] -= np.dot(A[:, k], A[:, j]) * A[:, k]
-            print(f"Esto es v: {A[::-1, j]}")
-            print(f"Esto es u:  {A[::-1,k]}")
-            print("\n")
+            print(f"La division es: {producint(A[::-1, j], A[::-1, k]) / producint(A[::-1, k], A[::-1, k])}")
+            print(f"Y se multiplica por: {A[:, k]}")
+            print(f"El resultado es {(producint(A[::-1, j], A[::-1, k]) / producint(A[::-1, k], A[::-1, k])) * A[:, k]}")
+            print(f"Todo se resta a {A[:,j]}")
+            A[:, j] -= (producint(A[::-1, j], A[::-1, k]) / producint(A[::-1, k], A[::-1, k])) * A[:, k]
 
-            integral = np.polyint(P.polymul(A[::-1, j], A[::-1, k]))
-            print(f"Esta es la multiplicacion de v*u: {P.polymul(A[::-1, j], A[::-1, k])}")
-            print(f"Esta es la integral de v*u: {integral}")
-            integral2 = np.polyint(P.polymul(A[::-1, k], A[::-1, k]))
-            print(f"Esta es la multiplicacion de u*u: {P.polymul(A[:, k], A[:, k])}")
-            print(f"Esta es la integral de u*u: {integral2}")
-            print("\n")
-            print(f"La integral definida de v*u es:{np.polyval(integral, 1) - np.polyval(integral, -1)}")
-            print(f"La integral definida de u*u es:{np.polyval(integral2, 1) - np.polyval(integral2, -1)}")
-            print(f"Esta es la division de las integrales: {(np.polyval(integral, 1) - np.polyval(integral, -1)) / (np.polyval(integral2, 1) - np.polyval(integral2, -1))}")
-            print("\n")
-            A[:, j] -= ((np.polyval(integral, 1) - np.polyval(integral, -1)) / (np.polyval(integral2, 1) - np.polyval(integral2, -1))) * A[:, k]
             print(f"Este es el vector columa resultante: {A[:,j]}\n")
     return A
+
+
+def producint(f1, f2):
+    integral = np.polyint(P.polymul(f1, f2))
+    value = (np.polyval(integral, 1) - np.polyval(integral, -1))
+    return value
 
 
 if __name__ == '__main__':
